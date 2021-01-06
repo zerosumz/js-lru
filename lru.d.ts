@@ -6,7 +6,7 @@ export class LRUMap<K,V> {
   // `entries` should be an Array or other iterable object whose elements are
   // key-value pairs (2-element Arrays). Each key-value pair is added to the new Map.
   // null is treated as undefined.
-  constructor(limit :number, entries? :Iterable<[K,V]>);
+  constructor(limit :number, entries? :Iterable<[K,V]>, evictCallback? : (V, K) => void);
 
   // Convenience constructor equivalent to `new LRUMap(count(entries), entries)`
   constructor(entries :Iterable<[K,V]>);
@@ -16,6 +16,9 @@ export class LRUMap<K,V> {
 
   // Maximum number of items this map can hold
   limit :number;
+
+  // evict callback function
+  evictCallback :(V, K) => void;
 
   // Least recently-used entry. Invalidated when map is modified.
   oldest :Entry<K,V>;

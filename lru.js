@@ -31,21 +31,7 @@ const OLDER = Symbol('older');
 
 class LRUMap {
 
-  /**
-   * 삭제시 실행될 콜백함수
-   *
-   * @callback evictCallback
-   * @param {*} 삭제된개체
-   * @param {string} 삭제된 키
-   */
-
-  /**
-   *
-   * @param limit
-   * @param entries
-   * @param {evictCallback} cb
-   */
-  constructor(limit, entries, cb) {
+  constructor(limit, entries, evictCallback) {
     if (typeof limit !== 'number') {
       // called as (entries)
       entries = limit;
@@ -56,7 +42,7 @@ class LRUMap {
     this.limit = limit;
     this.oldest = this.newest = undefined;
     this._keymap = new Map();
-    this.evictCallback = cb;
+    this.evictCallback = evictCallback;
 
     if (entries) {
       this.assign(entries);
@@ -151,7 +137,8 @@ class LRUMap {
     if (this.size > this.limit) {
       // we hit the limit -- remove the head
       let[key, value] = this.shift();
-      this.evictCallback(value, key);
+      if(this.evictCallback)
+        this.evictCallback(value, key);
     }
 
     return this;
